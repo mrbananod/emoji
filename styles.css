@@ -1,0 +1,867 @@
+/* ==========================================================================
+   COLORES DEL SISTEMA (VARIABLES GLOBALES)
+   Guarda los colores en "variables" para reusarlos fácilmente.
+   Si cambias el código de un color aquí, se actualiza en toda la app.
+========================================================================== */
+
+:root {
+    --bg-dark: #121212;
+    --bg-panel: #161616;
+    --bg-card-dark: #1C1C1C;
+    --accent-green: #47cb8b;
+    --accent-blue: #57b9e7;
+    --accent-yellow: #FFCA28;
+    --accent-red: #EF5350;
+    --text-light: #FFFFFF;
+    --text-gray: #9E9E9E;
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   CONFIGURACIÓN BASE
+   Limpia los márgenes y asegura que la página ocupe el 100%.
+   'overflow: hidden' evita barras de desplazamiento feas.
+========================================================================== */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    height: 100vh; overflow: hidden;
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   LAYOUT PRINCIPAL
+   Divide la pantalla en 2 columnas (Izquierda y Derecha).
+   'display: grid' fija la primera en 480px y el resto es paisaje.
+========================================================================== */
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    height: 100vh;
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   --- PANEL IZQUIERDO ---
+   Contiene todo el menú de control y gráficas.
+   'overflow-y: auto' da scroll solo a esta parte si no cabe.
+========================================================================== */
+
+.sidebar {
+    background: var(--bg-panel);
+    border-right: 1px solid #333;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* PANEL DE CONTROL */
+.controls-card {
+    background: #191919;
+    border: 6px solid #211439;
+    border-radius: 12px;
+    padding: 20px;
+    color: #454545;
+}
+
+.control-group { 
+    margin-bottom: 15px; 
+}
+.control-group label { 
+    font-weight: 800; 
+    font-size: 13px; 
+    display: block; 
+    margin-bottom: 8px; 
+    color: #ffffff; 
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   ESTILO SLIDERS (BARRAS DESLIZABLES)
+   Quita el diseño por defecto de Windows/Mac y lo personaliza.
+   'appearance: none' permite que dibujemos la pista y la bolita.
+========================================================================== */
+
+input[type="range"] {
+    -webkit-appearance: none;
+     appearance: none;
+    width: 100%; 
+    height: 6px; 
+    border-radius: 3px; 
+    cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    width: 16px; 
+    height: 16px; 
+    border-radius: 50%; 
+    cursor: pointer;
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   COLOR TEXTO DEL PANEL PRINCIPAL (SLIDERS MULTICOLOR)
+   Da un color distinto (Lila, Amarillo, Rojo) a cada barra.
+========================================================================== */
+
+.slider-purple { background: #E1BEE7; }
+.slider-purple::-webkit-slider-thumb { background: #8E24AA; }
+
+.slider-yellow { background: #afad90; }
+.slider-yellow::-webkit-slider-thumb { background: #eed00c; }
+
+.slider-red { background: #e4aeb4; }
+.slider-red::-webkit-slider-thumb { background: #ea3e3c; }
+
+.slider-green { background: #9ed0a6; }
+.slider-green::-webkit-slider-thumb { background: #10ac17; }
+
+.slider-blue { background: #9ea2d0; }
+.slider-blue::-webkit-slider-thumb { background: #5143ea; }
+/* ==========================================================================*/
+
+/* ==========================================================================
+   TARJETA MATEMÁTICAS OSCURA Y GRÁFICAS
+   ¿Para qué sirve?: Organiza las ecuaciones y las zonas donde se dibujan las líneas.
+========================================================================== */
+.math-card {
+    background: var(--bg-card-dark);
+    border-radius: 18px;
+    padding: 20px;
+    border: 1px solid lch(33.22% 2.19 19.61);
+}
+
+.header-math {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background: #111; 
+    padding: 12px 16px; 
+    border-radius: 10px; 
+    margin-bottom: 15px;
+}
+
+/*PANEL COMPLETO IZQUIERDO */
+.mini-sun-dial {
+    width: 56px;
+    height: 56px; 
+    border-radius: 50%; 
+    background: linear-gradient(145deg, #2b2b2b, #111111);
+    border: 2px solid #3a3a3a; 
+    position: relative; 
+    cursor: grab;
+    /* Sombra 3D exterior y brillo interior */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.1);
+    overflow: hidden;
+}
+
+.mini-sun-dial:active {
+    cursor: grabbing;
+}
+
+/*DIBUJOS PEQUEÑOS DEL PANEL*/
+.sun-moon-container { 
+    width: 100%; 
+    height: 100%;
+    position: absolute;
+}
+
+.mini-icon {
+    position: absolute;
+    left: 50%;
+    width: 22px;
+    height: 22px;
+}
+
+.mini-sun {
+    top: 4px;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 4px rgba(255, 202, 40, 0.8));
+}
+
+.mini-moon {
+    bottom: 4px;
+    transform: translateX(-50%) rotate(-180deg);
+    filter: drop-shadow(0 0 4px rgba(255, 245, 157, 0.6));
+}
+
+.section-title { 
+    font-size: 11px; 
+    text-transform: uppercase; 
+    color: var(--text-light); 
+    text-align: center; 
+    margin: 10px 0; 
+    letter-spacing: 1px;
+}
+
+/* GRÁFICAS: 'position: absolute' permite flotar los textos encima del canvas */
+.graph-container {
+    height: 100px; 
+    background: #111; 
+    border-radius: 8px; 
+    position: relative; 
+    border: 1px solid #222;
+}
+
+/*GRAFICA DE INCIDENCIA SOLAR*/
+.incidence-box { 
+    height: 145px; 
+    padding: 14px; 
+}
+
+/* TEXTO = ANGULO: ANGULO°*/ 
+.abs-tl { 
+    position: absolute; 
+    top: 10px; 
+    left: 10px; 
+    font-size: 10px; 
+}
+
+/*TEXTO = LUZ: PORCENTAJE*/
+.abs-tr { 
+    position: absolute; 
+    top: 10px; 
+    right: 10px; 
+    font-size: 10px; 
+    font-weight: bold;
+}
+
+canvas.chart { 
+    width: 100%; 
+    height: 95%; 
+}
+
+/* Ecuación con fuente estilo código */
+.equation-box {
+    background: #111; 
+    padding: 12px;
+    border-radius: 8px; 
+    border: 1px solid #222;
+    font-family: 'JetBrains Mono', monospace; 
+    font-size: 13px; 
+    font-weight: bold;
+    text-align: center; 
+    line-height: 1.8; 
+    margin-bottom: 15px;
+}
+
+.info-grid { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 15px; 
+}
+.info-box {
+    background: #111; 
+    border-radius: 8px; 
+    padding: 10px; 
+    flex: 1; 
+    text-align: center; 
+    border: 1px solid #222;
+}
+.info-box span { 
+    font-size: 10px; 
+    color: var(--text-gray); 
+    display: block; 
+    margin-bottom: 5px; 
+}
+.info-box strong { 
+    font-size: 16px; 
+    font-weight: 800; 
+}
+
+.zoom-slider-container {
+    background: #111; 
+    padding: 12px; 
+    border-radius: 8px; 
+    text-align: center; 
+    margin: 15px 0; 
+    border: 1px solid #222;
+}
+
+/* COLOR ESCALA DE TIEMPO (ZOOM) */
+.zoom-slider-container label { 
+    font-size: 11px; 
+    font-weight: 600; 
+    color: #CCC;
+}
+.slider-dark { 
+    background: #6c6969; 
+    margin-top: 8px; 
+}
+.slider-dark::-webkit-slider-thumb { 
+    background: #b6b4b4; 
+    width: 12px; 
+    height: 12px;
+}
+/* ==========================================================================*/
+
+/* Utilidades de texto */
+.text-green { color: var(--accent-green); }
+.text-red { color: var(--accent-red); }
+.text-blue { color: var(--accent-blue); }
+.text-yellow { color: var(--accent-yellow); } 
+.text-gray { color: var(--text-gray); }
+/* ==========================================================================*/
+
+/* ==========================================================================
+   --- PANEL DERECHO (ESCENA CON IMÁGENES PNG) ---
+   Esta parte del codigo contiene todo acerca de las animaciones e interfaz
+   de nuestro proyecto.
+========================================================================== */
+
+.scene-area {
+    position: relative; 
+    background: #0b1a30; 
+    overflow: hidden;
+}
+
+.sky-bg {
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    transition: background 0.1s linear; 
+    z-index: 1;
+}
+
+#stars-canvas {
+    position: absolute; 
+    top: 0%; 
+    left: 0%; 
+    width: 100%; 
+    height: 100%; 
+    z-index: 2; 
+    pointer-events: none;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1)) drop-shadow(0 0 8px rgba(255, 250, 180, 0.6));
+}
+
+/* El círculo gigante que gira el sol y la luna */
+#celestial-orbit {
+    position: absolute; 
+    top: 40%; 
+    left: 50%; 
+    width: 80vw; 
+    height: 80vw;
+    transform: translate(-50%, -10%); 
+    border-radius: 50%; 
+    z-index: 3; 
+    pointer-events: none;
+}
+
+.sun-icon {
+    position: absolute; 
+    top:45%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    pointer-events: auto; 
+    cursor: grab;
+    z-index: 1;
+}
+
+.moon-icon {
+    position: absolute; 
+    top: 45%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    pointer-events: auto; 
+    cursor: grab; 
+    filter: 
+        drop-shadow(0 0 10px #ffffff28) 
+        drop-shadow(0 0 15px #f7e65250) 
+        drop-shadow(0 0 45px rgba(240, 227, 113, 0.277));
+    z-index: 12;
+}
+
+/* OSCURIDAD DE LA NOCHE */
+.night-overlay {
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: #05101e;
+    mix-blend-mode: multiply;
+    opacity: 0;
+    z-index: 13; 
+    pointer-events: none;
+     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,1) 60%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,1) 100%);
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   INTERFAZ GRAFICA (IMÁGENES DEL PAISAJE)
+   Ubica cada imagen en su sitio usando 'bottom' y 'z-index'.
+========================================================================== */
+
+.landscape { 
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    z-index: 8; 
+    pointer-events: none; 
+}
+
+/* FONDO COLINAS */
+.img-bg {
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 50vh;
+    object-fit: cover; 
+    object-position: bottom center; 
+    z-index: 4;
+}
+/* ==========================================================================*/
+
+/* ARBOLES */
+.img-tree { 
+    position: absolute; 
+    z-index: 5; 
+    object-fit: contain;
+}
+.tree-back {
+    bottom: 15vh; 
+    left: 45%; 
+    height: 40vh; 
+    filter: brightness(0.85); /* Lo oscurece para dar efecto de fondo */
+}
+.tree-stree {
+    bottom: 29vh; 
+    left: 70%; 
+    height: 50vh; 
+    z-index: 7;
+}
+.tree-main1 {
+    bottom: 34vh; 
+    left: 20%; 
+    height: 20vh; /* Ajustado para hacer que arbol_grande se vea enorme */
+    z-index: 7;
+}
+/* ==========================================================================*/
+
+/* ARBUSTOS */
+.img-bushes {
+    position: absolute; 
+    bottom: 7vh; 
+    left: 40%; 
+    width: 45vw; 
+    max-width: 450px;
+    object-fit: contain; 
+    z-index: 8;
+    filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.4));
+}
+.img-bushes1 {
+    position: absolute; 
+    bottom: 7vh; 
+    left: 120vh;
+    width: 45vw; 
+    max-width: 450px;
+    object-fit: contain; 
+    z-index: 8;
+    filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.4));
+}
+.img-bushes2 {
+    position: absolute; 
+    bottom: 7vh; 
+    right: 54%; 
+    width: 45vw; 
+    max-width: 450px;
+    object-fit: contain; 
+    z-index: 8;
+    filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.4));
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   FAROL Y EFECTOS DE LUZ
+   ¿Para qué sirve?: Posiciona el farol y los brillos mágicos nocturnos.
+========================================================================== */
+
+/*FAROL*/
+.lamp-container {
+    position: absolute; 
+    bottom: 10vh; 
+    left: 50%; 
+    width: 100px; 
+    height: 50vh;
+    /* BORRAMOS EL z-index: 9 DE AQUÍ */
+    display: flex; 
+    justify-content: center;
+}
+
+.img-lamp {
+    height: 100%; 
+    width: 100%; 
+    object-fit: contain; 
+    filter: drop-shadow(10px 15px 10px rgba(0,0,0,0.4));
+    position: relative;
+    z-index: 9; /* El poste se queda bajo la noche */
+}
+
+.bulb-glow-overlay {
+    position: absolute; 
+    top: 12%; 
+    left: 57%; 
+    transform: translateX(-70%);
+    width: 45px; 
+    height: 45px; 
+    background: #ffffff; 
+    box-shadow: 
+        0 0 15px 10px #ffffff,                
+        0 0 35px 25px #fff275,                
+        0 0 60px 40px rgba(255, 230, 0, 0.7); 
+    border-radius: 50%; 
+    opacity: 1; 
+    transition: opacity 0.3s;
+    mix-blend-mode: screen; 
+    z-index: 20; /* Ahora brilla por encima de la oscuridad */
+}
+
+.light-beam {
+    position: absolute; 
+    bottom: 12vh; 
+    left: 56%; /* Centrado perfecto */
+    transform: translateX(-50%);
+    width: 40vw; 
+    max-width: 400px; 
+    height: 40vh;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0) 2%,                 
+        rgba(255, 255, 255, 1) 15%,     
+        rgba(255, 240, 150, 0.9) 50%,   
+        rgba(255, 240, 150, 0) 100%);              
+    clip-path: polygon(48% 0%, 52% 0%, 90% 150%, 10% 150%); 
+    mix-blend-mode: screen; 
+    filter: blur(20px); 
+    opacity: 1; 
+    transition: opacity 0.2s; 
+    z-index: 19; 
+    pointer-events: none;
+}
+/* ==========================================================================*/
+
+/* BANCO */
+.bench-container {
+    position: absolute; 
+    bottom: 8vh; 
+    left: 56%; 
+    height: 20vh; 
+    z-index: 9;
+}
+.img-bench {
+    height: 100%; 
+    object-fit: contain; 
+    filter: drop-shadow(5px 15px 10px rgba(0,0,0,0.5));
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   BATERÍA 3D ORIGINAL
+   Dibuja la batería visual. 
+   'overflow: hidden' hace que la barra de carga respete
+   los bordes redondos de la caja.
+========================================================================== */
+
+/* ==========================================================================
+   SISTEMA DE CABLES Y FLUJO DE ENERGÍA
+========================================================================== */
+
+/*CABLES QUE PERMITEN EL PASO DE ENERGIA A LA PILA*/
+.wire {
+    position: absolute;
+    background-color: #0a0a0a;
+    border-radius: 4px;
+    z-index: 7;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    overflow: hidden;
+}
+
+.wire.vertical { width: 3px; }
+.wire.horizontal { height: 3px; }
+
+.wire-pole {
+    left: 55px;
+    top: 10%;
+    height: calc(90% + 1vh);
+}
+.wire-ground {
+    bottom: 9vh; 
+    left: calc(46% + 3px);
+    width: calc(10% + 2px);
+}
+.wire-batt {
+    bottom: 9vh; 
+    left: calc(42% + 37px); 
+    height: 30px;
+}
+
+/* --- ANIMACIONES DE PULSOS DE ENERGÍA --- */
+.energy-flow {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0; transition: opacity 0.3s;
+}
+
+.color-charge {
+    background-image: repeating-linear-gradient(var(--dir), transparent, transparent 10px, #00E676 10px, #00E676 20px);
+    box-shadow: inset 0 0 5px #00E676;
+}
+
+.wire.horizontal1 { 
+    position: absolute;
+    bottom: 19vh;
+    height: 3px;
+    z-index: 10;
+    left: calc(42% + 28px);
+    width: calc(10% + 2px);
+}
+
+.color-discharge {
+background-image: repeating-linear-gradient(var(--dir), transparent, transparent 10px, #FFCA28 10px, #FFCA28 20px);
+box-shadow: inset 0 0 5px #FFCA28;
+}
+
+.energy-down { --dir: to bottom; background-size: 100% 200%; animation: f-down 0.5s linear infinite; }
+.energy-up { --dir: to top; background-size: 100% 200%; animation: f-up 0.5s linear infinite; }
+.energy-left { --dir: to left; background-size: 200% 100%; animation: f-left 0.5s linear infinite; }
+.energy-right { --dir: to right; background-size: 200% 100%; animation: f-right 0.5s linear infinite; }
+
+@keyframes f-down { to { background-position: 0 40px; } }
+@keyframes f-up { to { background-position: 0 -40px; } }
+@keyframes f-left { to { background-position: -40px 0; } }
+@keyframes f-right { to { background-position: 40px 0; } }
+
+/* ==========================================================================
+   BATERÍA
+========================================================================== */
+
+.battery-container {
+    position: absolute; 
+    bottom: 7vh; 
+    left: 42%;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px; 
+}
+
+.battery-wrapper {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.battery-body {
+    position: relative;
+    width: 30px;
+    height: 60px;
+    background: #1a1a1a; 
+    border: 2px solid #777575; 
+    border-radius: 6px; 
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+}
+
+.battery-fill { 
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: linear-gradient(to top, #00E676, #B2FF59);
+    transition: height 0.2s, background 0.3s; 
+}
+
+.battery-text {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 800;
+    font-size: 9px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    z-index: 2;
+}
+
+.battery-terminal {
+    width: 24px; 
+    height: 6px;
+    background: #616060;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    position: relative;
+}
+
+.battery-terminal::after {
+    content: '';
+    position: absolute;
+    top: -4px; 
+    left: 50%;
+    width: 12px;
+    height: 4px;
+    transform: translateX(-50%);
+    background: #433e31; 
+    border-radius: 2px 2px 0 0;
+}
+
+.battery-wh {
+    color: white;
+    font-weight: 800;
+    bottom: 5vh;
+    font-size: 12px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    text-align: center;
+    width: 100%; 
+}
+/* ==========================================================================*/
+
+/* ==========================================================================
+   CIELO (NUBES Y PÁJAROS CON ANIMACIÓN)
+========================================================================== */
+
+.cloud {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/*   ---  NUBLES  ---   */
+/*NUBES DIA*/
+.nube1 { 
+    top: 8%; 
+    left: 55%; 
+    width: 25vw; 
+    animation: floatCloud 25s ease-in-out infinite alternate; 
+    filter: opacity(75%);
+}
+
+.nube2 { 
+    top: 15%; 
+    right: 67%; 
+    width: 28vw; 
+    animation: floatCloud 30s ease-in-out infinite alternate-reverse; 
+    filter: opacity(70%);
+}
+
+
+/*NUBES NOCHE*/
+.nube3 { 
+    top: 5%; 
+    right: 65%; 
+    width: 18vw; 
+    animation: floatCloud 28s ease-in-out infinite alternate; 
+    filter: opacity(35%);
+}
+
+.nube4 { 
+    top: 18%; 
+    right: 15%; 
+    width: 24vw; 
+    animation: floatCloud 35s ease-in-out infinite alternate; 
+    filter: opacity(65%);
+}
+/* ==========================================================================*/
+
+/*PAJAROS*/
+.birds {
+    position: absolute;
+    top: 20%;
+    left: -20%;
+    width: 20vw;
+    z-index: 3;
+    pointer-events: none;
+    animation: flyBirds 40s linear infinite;
+}
+/* ==========================================================================*/
+
+@keyframes floatCloud {
+    0% { transform: translateX(0px); }
+    100% { transform: translateX(50px); } /* Flotan suave de izq a der */
+}
+@keyframes flyBirds {
+    0% { transform: translateX(0vw) translateY(0); }
+    100% { transform: translateX(120vw) translateY(-15vh); }
+}
+
+/* ==========================================================================
+   FLORES, ÁRBOL GRANDE Y DECORACIONES
+========================================================================== */
+
+.img-flores {
+    position: absolute;
+    bottom: 26vh;
+    left: 23%;
+    width: 14%;
+    height: 18vh;
+    object-fit: cover;
+    object-position: bottom;
+    z-index: 6;
+    pointer-events: none;
+}
+
+.tree-main {
+    bottom: 12vh; 
+    left: 52%; 
+    height: 50vh;
+    z-index: 7;
+}
+
+.img-bushes {
+    position: absolute; 
+    bottom: 7vh; 
+    left: 40%; 
+    width: 45vw; 
+    max-width: 450px;
+    object-fit: contain; 
+    z-index: 8;
+    filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.4));
+}
+.bench-container {
+    position: absolute; 
+    bottom: 8vh; 
+    left: 56%; 
+    height: 20vh; 
+    z-index: 9;
+}
+.img-bench {
+    height: 100%; 
+    object-fit: contain; 
+    filter: drop-shadow(5px 15px 10px rgba(0,0,0,0.5));
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD (PANTALLAS PEQUEÑAS)
+   Apila el diseño en celulares.
+   'order: -1' sube el paisaje a la parte superior.
+========================================================================== */
+
+@media (max-width: 900px) {
+    .dashboard-layout { grid-template-columns: 1fr; grid-template-rows: 50vh 50vh; }
+    .scene-area { order: -1; }
+    .sidebar { border-right: none; border-top: 1px solid #333; }
+    
+    .lamp-container { height: 35vh; bottom: 15vh;}
+    .img-tree { height: 35vh; bottom: 18vh;}
+    .bench-container { height: 12vh; bottom: 15vh;}
+}
+/* ==========================================================================*/

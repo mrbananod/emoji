@@ -1,12 +1,212 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emoji Responsivo</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Panel Solar - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Archivo CSS Principal -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- EFECTOS DE NOCHE Y LUNA (Separados para respetar tu archivo CSS) -->
+    <style>
+        .night-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: #030a14; mix-blend-mode: multiply; opacity: 0; 
+            z-index: 15; pointer-events: none;
+        }
+        .moon-glow-effect {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 150px; height: 150px; background: radial-gradient(circle, rgba(255, 255, 200, 0.4) 0%, transparent 60%);
+            opacity: 0; transition: opacity 1s; pointer-events: none; z-index: -1;
+        }
+    </style>
 </head>
 <body>
-  <img src="emoji.png" alt="Emoji sonriente">
+
+    <div class="dashboard-layout">
+        
+        <!-- PANEL IZQUIERDO (Controles + Matemáticas) -->
+        <aside class="sidebar">
+            <div class="controls-card">
+                <h3 class="section-title" style="color: rgb(201, 205, 255); font-size: 24px; font-weight: bold; margin-bottom: 20px;"> Panel de control </h3>
+
+                <div class="control-group">
+                    <label id="lbl-vel">⏱️ Velocidad: 1.5x</label>
+                    <input type="range" id="sl-vel" class="slider-purple" min="0" max="3" step="0.1" value="1.5">
+                </div>
+                <div class="control-group">
+                    <label id="lbl-paneles">☀️ Cantidad Paneles: 1</label>
+                    <input type="range" id="sl-paneles" class="slider-yellow" min="1" max="10" step="1" value="1">
+                </div>
+                <div class="control-group">
+                    <label id="lbl-area">📏 Área Panel: 1.0 m²</label>
+                    <input type="range" id="sl-area" class="slider-blue" min="0.5" max="5.0" step="0.1" value="1.0">
+                </div>
+                <div class="control-group">
+                    <label id="lbl-foco">💡 Potencia Foco: 5.0 W</label>
+                    <input type="range" id="sl-foco" class="slider-red" min="1" max="30" step="0.5" value="5.0">
+                </div>
+                <div class="control-group" style="margin-bottom: 0;">
+                    <label id="lbl-cap">🔋 Batería: 50 Wh</label>
+                    <input type="range" id="sl-cap" class="slider-green" min="10" max="200" step="1" value="50">
+                </div>
+            </div>
+
+            <div class="math-card">
+                <div class="header-math">
+                    <div>
+                        <span class="text-gray" style="font-size: 12px;">Hora Virtual</span><br>
+                        <strong style="font-size: 28px;" id="time-display">12:00</strong>
+                    </div>
+                    <div class="mini-sun-dial" id="sun-dial-mini">
+                        <div class="sun-moon-container" id="sun-moon-mini">
+                            <span style="position:absolute; top: 2px; left: 50%; transform: translateX(-50%);">☀️</span>
+                            <span style="position:absolute; bottom: 2px; left: 50%; transform: translateX(-50%);">🌙</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Incidencia Solar (Curva Coseno)</h3>
+                <div class="graph-container incidence-box">
+                    <canvas id="canvas-incidencia" class="chart"></canvas>
+                    <div id="angulo-text" class="abs-tl text-gray">Ángulo: 0.0°</div>
+                    <div id="incidencia-text" class="abs-tr text-yellow">Luz: 100%</div>
+                </div>
+
+                <h3 class="section-title">Ecuación Diferencial en Tiempo Real</h3>
+                <div class="equation-box" id="equation-display"></div>
+
+                <div class="info-grid">
+                    <div class="info-box">
+                        <span>Carga Q(t)</span>
+                        <strong class="text-blue" id="info-q">50.0 Wh</strong>
+                    </div>
+                    <div class="info-box">
+                        <span>Flujo dQ/dt</span>
+                        <strong class="text-green" id="info-dq">0.0 W</strong>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Nivel de Carga Q(t) vs Tiempo</h3>
+                <div class="graph-container">
+                    <canvas id="canvas-graph-q" class="chart"></canvas>
+                </div>
+
+                <div class="zoom-slider-container">
+                    <label id="lbl-zoom">🔍 Escala de Tiempo (Zoom): 100 puntos</label><br>
+                    <input type="range" id="sl-zoom" class="slider-dark" min="50" max="500" step="10" value="100">
+                    <div style="font-size: 10px; color:#4e4e4e; margin-top:5px;">✅ Viendo en Tiempo Real</div>
+                </div>
+
+                <h3 class="section-title">Flujo de Energía dQ/dt vs Tiempo</h3>
+                <div class="graph-container" style="margin-bottom: 10px;">
+                    <canvas id="canvas-graph-dq" class="chart"></canvas>
+                </div>
+            </div>
+        </aside>
+
+        <!-- PANEL DERECHO (Escena Inmersiva PNG) -->
+<!-- PANEL DERECHO (Escena Inmersiva PNG) -->
+        <main class="scene-area">
+            <div class="sky-bg" id="sky-bg"></div>
+            
+            <!-- Órbita Sol y Luna -->
+            <div id="celestial-orbit">
+                <div class="sun-icon" id="sun-sky">
+                    <img src="sol.png" alt="Sol" style="width: 90px; height: 90px; filter: drop-shadow(0 0 25px rgba(255, 202, 40, 0.8));">
+                </div>
+                <div class="moon-icon" id="moon-sky">
+                    <div id="moon-glow" class="moon-glow-effect"></div>
+                    <svg width="60" height="50" viewBox="0 0 24 24" fill="#FFF59D"><path d="M21,12.79A9,9,0,1,1,11.21,3,7,7,0,0,0,21,12.79Z"/></svg>
+                </div>
+            </div>
+
+            <canvas id="stars-canvas"></canvas>
+
+            <!-- NUEVO: NUBES Y PÁJAROS -->
+            <img src="nube1.png" class="cloud nube1 day-element" alt="Nube de Día">
+            <img src="nube2.png" class="cloud nube2 day-element" alt="Nube de Día">
+            <img src="pajaros.png" class="birds day-element" alt="Pájaros">
+            
+            <img src="nube3.png" class="cloud nube3 night-element" alt="Nube de Noche">
+            <img src="nube4.png" class="cloud nube4 night-element" alt="Nube de Noche">
+
+            <!-- PAISAJE -->
+            <div class="landscape">
+                <img src="fondo.png" class="img-bg" alt="Fondo colinas">
+                
+                <!-- Árbol Secundario (Fondo) -->
+                <img src="arbolchiquito.png" class="img-tree tree-back" alt="Árbol secundario">
+                
+                <!-- NUEVO: Árbol Grande (Frente) -->
+                <img src="ARBOL_GRANDE.png" class="img-tree tree-stree" alt="Árbol tercero">
+                <img src="arbol.png" class="img-tree tree-main" alt="Árbol principal">
+                <img src="ARBOL1.png" class="img-tree tree-main1" alt="Árbol principal">
+                <!-- NUEVO: Flores -->
+                <img src="flores.png" class="img-flores" alt="Campo de flores">
+
+                <div class="lamp-container">
+                    <!-- 1. CABLE DEL POSTE (Sube al panel y baja a la base) -->
+                    <div class="wire vertical wire-pole">
+                        <div class="energy-flow color-charge energy-down" id="charge-pole"></div>
+                    </div>
+                    <img src="farol.png" class="img-lamp" alt="Farol solar">
+                    <div id="bulb-glow" class="bulb-glow-overlay"></div>
+                </div>
+
+                <!-- 2. CABLE DEL SUELO (Conecta el poste con la batería) -->
+                <div class="wire horizontal wire-ground">
+                    <div class="energy-flow color-charge energy-left" id="charge-ground"></div>
+                </div>
+
+                <!-- 3. CABLE DE BATERÍA (Sube hacia adentro de la batería) -->
+                <div class="wire vertical wire-batt">
+                    <div class="energy-flow color-charge energy-up" id="charge-batt"></div>
+                </div>
+
+                <!-- 4. CABLE DE BATERÍA A LA LAMPARA -->
+                <div class="wire horizontal1">
+                    <!-- Solo le ponemos la clase color-discharge (amarillo) y energy-right (movimiento a la derecha) -->
+                    <div class="energy-flow color-discharge energy-right" id="discharge-mid"></div>
+                </div>
+
+                <!-- RESTAURADO: Arbustos Frontales -->
+                <img src="arbustos.png" class="img-bushes" alt="Arbustos frontales">
+                <img src="arbustos.png" class="img-bushes1" alt="Arbustos frontales">
+                <img src="arbustos.png" class="img-bushes2" alt="Arbustos frontales">
+
+                <!-- RESTAURADO: Banco -->
+                <div class="bench-container">
+                    <img src="banco.png" class="img-bench" alt="Banco de parque">
+                </div>
+
+                <!-- CAPA DE OSCURIDAD GLOBAL (Multiplica el fondo para hacerlo de noche) -->
+                <div id="night-overlay" class="night-overlay"></div>
+
+                <!-- LUZ DEL FAROL (Rompe la capa oscura iluminando debajo) -->
+                <div class="light-beam" id="lamp-beam"></div>
+
+                <!-- BATERÍA VERTICAL -->
+                <div class="battery-container">
+                    <div class="battery-wrapper">
+                        <div class="battery-terminal"></div>
+                        <div class="battery-body">
+                            <div class="battery-fill" id="battery-fill"></div>
+                            <div class="battery-text" id="battery-text-percent">100%</div>
+                        </div>
+                    </div>
+                    <div class="battery-wh" id="battery-text-wh">50.0 Wh</div>
+                </div>
+
+            </div>
+        </main>
+    <!-- Importar primero los módulos independientes -->
+    <script src="estrellas.js"></script>
+    <script src="farola.js"></script>
+    
+    <!-- Al final, el Director de Orquesta que usa todo lo de arriba -->
+    <script src="script.js"></script>
 </body>
 </html>
